@@ -58,28 +58,52 @@
 //   );
 // }
 
-
+import { isEmail,isNotEmpty,hasMinLength } from "../util/validation";
 import { useState } from "react";
+import Input from "./Input";
+import useInput from "../hooks/useInput";
+// import { isHtmlElement } from "react-router-dom/dist/dom";
 
 export default function StateLogin() {
+  //For Email
+  const {
+    value:emailValue ,
+    handleInputChange:handleEmailChange,
+    handleInputBlur:handleEmailBlur,
+    hasError : emailHasError,
+  }= useInput('',(value)=> isEmail(value) && isNotEmpty(value));
+  //For password
+  const {
+    value:passwordValue ,
+    handleInputChange:handlePaswordChange,
+    handleInputBlur:handlePasswordBlur,
+    hasError : passwordHasError,
+  }= useInput('',(value)=> hasMinLength(value,6));
 
   // const [enteredEmail,setEnteredEmail]=useState('');
   // const [enteredPassword,setEnteredPassword]=useState('');
+  // const emailInvalid = didEdit.email && 
+  // !isEmail(enteredValues.email) && 
+  // // !isNotEmpty(enteredValues.email);
+  // const passwordIsInvalid=
+  //   didEdit.password && hasMinLength(enteredValues.password , 6);
+  // const [enteredValues,setEnteredValues]=useState({
+  //   email:'',
+  //   password:''
+  // });
 
-  const [enteredValues,setEnteredValues]=useState({
-    email:'',
-    password:''
-  });
-
-  const [didEdit , setEdit]=useState({
-    email : false,
-    password : false
-  });
+  // const [didEdit , setEdit]=useState({
+  //   email : false,
+  //   password : false
+  // });
   
   // enteredValues.email !== '' && !enteredValues.email.includes('@');
 
   function handleSubmit(event){
     event.preventDefault();
+    if(emailHasError || passwordHasError){
+      return ;
+    }
     console.log(enteredValues);
   }
 
@@ -91,33 +115,59 @@ export default function StateLogin() {
   // function handlePasswordChange(event){
   //   setEnteredPassword(event.target.value);
   // }
-  const emailInvalid = didEdit.email && !enteredValues.email.includes('@');
+  // const emailInvalid = didEdit.email && !enteredValues.email.includes('@');
+  
+  // const passwordIsInvalid=
+  //   didEdit.password && enteredValues.password.trim().length <6 ;
+  
+  // function handleInputChange(identifier,value){
+  //   setEnteredValues(prevValues =>({
+  //     ...prevValues,
+  //     [identifier]:value
+  //   }));
+  //   setEdit(prevEdit =>({
+  //     ...prevEdit,
+  //     [identifier]: false
+  //   }))
+  // }
 
-  function handleInputChange(identifier,value){
-    setEnteredValues(prevValues =>({
-      ...prevValues,
-      [identifier]:value
-    }));
-    setEdit(prevEdit =>({
-      ...prevEdit,
-      [identifier]: false
-    }))
-  }
 
-
-  function handleInputBlur(identifier){
-    setEdit(prevEdit =>({
-      ...prevEdit,
-      [identifier]:true
-    }));
-  }
+  // function handleInputBlur(identifier){
+  //   setEdit(prevEdit =>({
+  //     ...prevEdit,
+  //     [identifier]:true
+  //   }));
+  // }
   
   return (
     <form onSubmit={handleSubmit}>
       <h2>Login</h2>
 
       <div className="control-row">
-        <div className="control no-margin">
+        <Input 
+          label="Email" 
+          id="email" 
+          name="email" 
+          type="email" 
+          onBlur={handleEmailBlur}
+          onChange={handleEmailChange}
+          value={emailValue}
+
+          error={emailHasError && 'Please Enter a valid email... '}
+        />
+
+        <Input 
+            label="Password" 
+            id='password' 
+            name="password" 
+            type="password" 
+            onBlur={handlePasswordBlur}
+            onChange={handlePaswordChange}
+            value={passwordValue}
+            error={passwordHasError && 'Please enter a valid password'}
+        />
+
+        {/* <div className="control no-margin">
           <label htmlFor="email">Email</label>
           <input 
             id="email" 
@@ -130,16 +180,15 @@ export default function StateLogin() {
           <div className="control-error">
               {emailInvalid && <p>Please Enter a valid email address.! </p>}
             </div>
-        </div>
+        </div> */}
 
-        <div className="control no-margin">
+        {/* <div className="control no-margin">
           <label htmlFor="password">Password</label>
           <input id="password" type="password" name="password" 
           onBlur={()=>handleInputBlur('password')}
-          value={enteredValues.password} 
-          onChange={(event)=>
-          handleInputChange('password',event.target.value)}/>
-        </div>
+          value={enteredValues.password} onChange={(event)=>
+            handleInputChange('password',event.target.value)}/>
+        </div> */}
       </div>
 
       <p className="form-actions">
